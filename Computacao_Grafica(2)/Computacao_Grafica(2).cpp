@@ -113,6 +113,42 @@ int main(){
 		glBindVertexArray(0);
 	}
 
+	void CompileShaders() {
+		//1.0 Cria o programa
+		shaderProgram = glCreateProgram(); //Inicia o programa
+		if (!shaderProgram) {
+			printf("Erro ao criar o Shader Program");
+			return;
+		}
+
+		//2.0 Compila o Vertex Shader
+		AddShader(shaderProgram, vShader, GL_VERTEX_SHADER); //Adiciona o Vertex Shader ao programa
+		//3.0 Compila o Fragment Shader
+		AddShader(shaderProgram, fShader, GL_FRAGMENT_SHADER); //Adiciona o Vertex Shader ao programa
+
+		//4.0 Cria o link do programa
+		glLinkProgram(shaderProgram); //Criar o link do programa na GPU
+
+		//5.0 Tratamento de erros
+		GLint result = 0;
+		GLchar eLog[1024] = { 0 };
+		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &result); //Verifica o resultado
+		if (!result) {
+			glGetProgramInfoLog(shaderProgram, sizeof(eLog), NULL, eLog);
+			printf("Erro ao linkar o programa: '%s'\n", eLog);
+			return;
+		}
+
+		//6.0 Validação se o programa está rodando
+		glValidateProgram(shaderProgram); //Validação do programa
+		glGetProgramiv(shaderProgram, GL_VALIDATE_STATUS, &result); //Verifica o resultado
+		if (!result) {
+			glGetProgramInfoLog(shaderProgram, sizeof(eLog), NULL, eLog);
+			printf("Erro ao validar o programa: '%s'\n", eLog);
+			return;
+		}
+	}
+
 }
 
 
